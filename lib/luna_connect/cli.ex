@@ -17,8 +17,6 @@ defmodule LunaConnect.CLI do
       config
       |> GH.fetch_issues()
       |> Enum.map(&GH.issue_to_task(&1, config))
-      # remove this
-      |> Enum.take(1)
       |> Enum.map(&API.create_task(&1, config))
 
     IO.puts("#{inspect(result, pretty: true)}")
