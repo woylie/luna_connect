@@ -12,10 +12,24 @@ defmodule LunaConnect.API do
   ]
 
   def create_task(params, %Configuration{access_token: access_token}) do
-    Req.post!(@base_url <> "/tasks",
+    (@base_url <> "/tasks")
+    |> Req.post!(
       json: params,
       auth: {:bearer, access_token},
       connect_options: @connect_options
     )
+    |> extract_task()
+  end
+
+  defp extract_task(%Req.Response{status: 201, body: %{"task" => task}}) do
+    {:ok, task}
+  end
+
+  defp extract_task(%Req.Response{status: 204}) do
+    {:error, :already_imported}
+  end
+
+  defp extract_task(%Req.Response{} = response) do
+    {:error, {:unexpected_response, response}}
   end
 end
