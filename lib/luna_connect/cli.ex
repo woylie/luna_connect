@@ -15,9 +15,11 @@ defmodule LunaConnect.CLI do
 
     config
     |> GH.fetch_issues()
-    |> Enum.map(&GH.issue_to_task(&1, config))
-    |> Enum.map(&{&1, API.create_task(&1, config)})
-    |> Enum.map(&print_response/1)
+    |> Enum.map(fn issue ->
+      params = GH.issue_to_task(issue, config)
+      response = API.create_task(params, config)
+      print_response(params, response)
+    end)
   end
 
   def main(["config" | _]) do
@@ -31,17 +33,15 @@ defmodule LunaConnect.CLI do
     """)
   end
 
-  defp print_response({%{name: name}, {:ok, _}}) do
+  defp print_response(%{name: name}, {:ok, _}) do
     IO.puts("Task created: #{name}")
   end
 
-  defp print_response({%{name: name}, {:error, :already_imported}}) do
+  defp print_response(%{name: name}, {:error, :already_imported}) do
     IO.puts("Already imported, skipped: #{name}")
   end
 
-  defp print_response(
-         {%{name: name}, {:error, {:unexpected_response, response}}}
-       ) do
+  defp print_response(%{name: name}, {:error, {:unexpected_response, response}}) do
     IO.puts("Unexpected response for: #{name}")
     IO.puts("#{inspect(response, pretty: true)}")
   end
