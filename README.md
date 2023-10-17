@@ -1,6 +1,6 @@
 # Luna Connect
 
-A shabby CLI tool for shoving tasks from services to Lunatask.
+A shabby CLI tool for shoving tasks from services into Lunatask.
 
 ```bash
 git clone https://github.com/woylie/luna_connect
@@ -27,7 +27,11 @@ You can override the default config folder by setting the
 
 ## Usage
 
-We'll see.
+Import Github issues assigned to `@me`:
+
+```bash
+luco gh
+```
 
 ## Why Elixir?
 

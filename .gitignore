@@ -29,3 +29,5 @@ luna_connect-*.tar
 /.plts
 
 /luco
+
+/.cacerts/cacerts.pem

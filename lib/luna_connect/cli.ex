@@ -3,14 +3,25 @@ defmodule LunaConnect.CLI do
   Defines the CLI interface.
   """
 
+  alias LunaConnect.API
   alias LunaConnect.Configuration
+  alias LunaConnect.GH
 
   @doc """
   Main function for the escript.
   """
   def main(["gh" | _]) do
-    _config = Configuration.read_config()
-    IO.puts("Here we are.\n")
+    config = Configuration.read_config()
+
+    result =
+      config
+      |> GH.fetch_issues()
+      |> Enum.map(&GH.issue_to_task(&1, config))
+      # remove this
+      |> Enum.take(1)
+      |> Enum.map(&API.create_task(&1, config))
+
+    IO.puts("#{inspect(result, pretty: true)}")
   end
 
   def main(["config" | _]) do

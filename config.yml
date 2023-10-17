@@ -1,4 +1,10 @@
-# Issues and pull requests in repositories belonging to these organizations will
-# be ignored.
-ignored_organizations:
-  - myorg
+# The Lunatask access token.
+access_token: abc123
+
+github:
+  # The default Lunatask area ID in which the tasks are created.
+  default_area_id: abc123
+  # Issues and pull requests in repositories belonging to these organizations will
+  # be ignored.
+  ignored_organizations:
+    - myorg

@@ -4,10 +4,14 @@ defmodule LunaConnect.Configuration do
   """
 
   @type t :: %__MODULE__{
-          ignored_organizations: [String.t()]
+          access_token: String.t(),
+          github: %{
+            default_area_id: String.t(),
+            ignored_organizations: [String.t()]
+          }
         }
 
-  defstruct ignored_organizations: []
+  defstruct [:access_token, :github]
 
   @doc """
   Reads, parses and validates the configuration file.
@@ -34,10 +38,19 @@ defmodule LunaConnect.Configuration do
     YamlElixir.read_from_string!(file)
   end
 
-  defp validate!(map) do
+  defp validate!(%{"access_token" => access_token, "github" => github}) do
     %__MODULE__{
-      ignored_organizations: validate_ignored_organizations!(map)
+      access_token: access_token,
+      github: %{
+        default_area_id: validate_area_id!(github),
+        ignored_organizations: validate_ignored_organizations!(github)
+      }
     }
+  end
+
+  defp validate_area_id!(%{"default_area_id" => area_id})
+       when is_binary(area_id) do
+    area_id
   end
 
   defp validate_ignored_organizations!(%{"ignored_organizations" => list})

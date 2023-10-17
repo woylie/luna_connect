@@ -39,17 +39,22 @@ defmodule LunaConnect.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:castore, ">= 1.0.0"},
       {:credo, "~> 1.7.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4.0", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
       {:jason, "~> 1.4"},
+      {:req, "~> 0.4.0"},
       {:yaml_elixir, "~> 2.9"}
     ]
   end
 
   defp aliases do
     [
-      setup: ["deps.get"],
+      setup: [
+        "deps.get",
+        "cmd cp -r ./deps/castore/priv/cacerts.pem ./.cacerts"
+      ],
       build: ["setup", "escript.build"],
       install: ["build", "escript.install luco"]
     ]
