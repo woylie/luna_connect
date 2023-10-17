@@ -42,6 +42,7 @@ defmodule LunaConnect.MixProject do
       {:castore, ">= 1.0.0"},
       {:credo, "~> 1.7.0", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 1.4.0", only: [:dev, :test], runtime: false},
+      {:ecto, "~> 3.10"},
       {:excoveralls, "~> 0.10", only: :test},
       {:jason, "~> 1.4"},
       {:req, "~> 0.4.0"},

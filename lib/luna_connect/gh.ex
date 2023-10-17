@@ -41,7 +41,7 @@ defmodule LunaConnect.GH do
           "title" => title,
           "url" => url
         },
-        %{github: %{default_area_id: area_id}}
+        %Configuration{github: %Configuration.Github{default_area_id: area_id}}
       ) do
     note = """
     #{url}

@@ -3,15 +3,45 @@ defmodule LunaConnect.Configuration do
   Defines a Configuration struct and decode/encode functions.
   """
 
+  use Ecto.Schema
+
+  import Ecto.Changeset
+
+  alias __MODULE__.Github
+
   @type t :: %__MODULE__{
           access_token: String.t(),
-          github: %{
-            default_area_id: String.t(),
-            ignored_organizations: [String.t()]
-          }
+          github: Github.t()
         }
 
-  defstruct [:access_token, :github]
+  @type github :: %Github{
+          default_area_id: String.t(),
+          ignored_organizations: [String.t()]
+        }
+
+  @primary_key false
+
+  embedded_schema do
+    field :access_token, :string
+
+    embeds_one :github, Github, primary_key: false do
+      field :default_area_id, :string
+      field :ignored_organizations, {:array, :string}, default: []
+    end
+  end
+
+  defp changeset(attrs) do
+    %__MODULE__{}
+    |> cast(attrs, [:access_token])
+    |> validate_required([:access_token])
+    |> cast_embed(:github, required: true, with: &github_changeset/2)
+  end
+
+  defp github_changeset(github, attrs) do
+    github
+    |> cast(attrs, [:default_area_id, :ignored_organizations])
+    |> validate_required([:default_area_id])
+  end
 
   @doc """
   Reads, parses and validates the configuration file.
@@ -38,23 +68,9 @@ defmodule LunaConnect.Configuration do
     YamlElixir.read_from_string!(file)
   end
 
-  defp validate!(%{"access_token" => access_token, "github" => github}) do
-    %__MODULE__{
-      access_token: access_token,
-      github: %{
-        default_area_id: validate_area_id!(github),
-        ignored_organizations: validate_ignored_organizations!(github)
-      }
-    }
-  end
-
-  defp validate_area_id!(%{"default_area_id" => area_id})
-       when is_binary(area_id) do
-    area_id
-  end
-
-  defp validate_ignored_organizations!(%{"ignored_organizations" => list})
-       when is_list(list) do
-    list
+  defp validate!(%{} = attrs) do
+    attrs
+    |> changeset
+    |> apply_action!(:validate)
   end
 end
