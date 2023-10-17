@@ -22,7 +22,10 @@ defmodule LunaConnect.API do
   end
 
   defp extract_task(%Req.Response{status: 201, body: %{"task" => task}}) do
-    {:ok, task}
+    case LunaConnect.Task.validate(task) do
+      {:ok, task} -> {:ok, task}
+      {:error, changeset} -> {:error, {:unexpected_response, changeset}}
+    end
   end
 
   defp extract_task(%Req.Response{status: 204}) do
