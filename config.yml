@@ -1,0 +1,4 @@
+# Issues and pull requests in repositories belonging to these organizations will
+# be ignored.
+ignored_organizations:
+  - myorg
