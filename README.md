@@ -39,6 +39,12 @@ Import requested PR reviews from Github:
 luco gh reviews
 ```
 
+Update statuses of tasks imported from Github:
+
+```bash
+luco gh update
+```
+
 ## Why Elixir?
 
 Because it's what I know.

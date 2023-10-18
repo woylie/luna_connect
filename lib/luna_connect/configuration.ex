@@ -11,7 +11,7 @@ defmodule LunaConnect.Configuration do
 
   @type t :: %__MODULE__{
           access_token: String.t(),
-          github: Github.t()
+          github: %Github{}
         }
 
   @type github :: %Github{
