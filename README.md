@@ -30,7 +30,13 @@ You can override the default config folder by setting the
 Import Github issues assigned to `@me`:
 
 ```bash
-luco gh
+luco gh issues
+```
+
+Import requested PR reviews from Github:
+
+```bash
+luco gh reviews
 ```
 
 ## Why Elixir?

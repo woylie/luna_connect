@@ -10,7 +10,19 @@ defmodule LunaConnect.CLI do
   @doc """
   Main function for the escript.
   """
-  def main(["gh" | _]) do
+  def main(["gh" | ["reviews" | _]]) do
+    config = Configuration.read_config()
+
+    config
+    |> GH.fetch_requested_reviews()
+    |> Enum.map(fn pr ->
+      params = GH.requested_review_to_task(pr, config)
+      response = API.create_task(params, config)
+      print_response(params, response)
+    end)
+  end
+
+  def main(["gh" | ["issues" | _]]) do
     config = Configuration.read_config()
 
     config
@@ -29,7 +41,8 @@ defmodule LunaConnect.CLI do
 
   def main(_) do
     IO.puts("""
-    luco gh - Import open GH issues assigned to @me
+    luco gh issues - Import open GH issues assigned to @me
+    luco gh reviews - Import requested PR reviews
     """)
   end
 
