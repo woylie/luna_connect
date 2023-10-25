@@ -6,6 +6,7 @@ defmodule LunaConnect.CLI do
   alias LunaConnect.API
   alias LunaConnect.Configuration
   alias LunaConnect.GH
+  alias LunaConnect.Linear
 
   @doc """
   Main function for the escript.
@@ -62,6 +63,19 @@ defmodule LunaConnect.CLI do
     IO.puts("Error updating task: x\n")
 
     Enum.map(tasks, &maybe_mark_completed(&1, all_issue_ids, config))
+  end
+
+  def main(["linear" | _]) do
+    config = Configuration.read_config()
+
+    IO.puts("Loading assigned issues from Linear")
+
+    config
+    |> Linear.fetch_issues()
+    |> Enum.map(fn issue ->
+      response = API.create_task(issue, config)
+      print_response(issue, response)
+    end)
   end
 
   def main(["config" | _]) do
