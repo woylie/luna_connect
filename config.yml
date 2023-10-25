@@ -8,3 +8,9 @@ github:
   # be ignored.
   ignored_organizations:
     - myorg
+
+linear:
+  # The personal API key.
+  api_key: abc123
+  # The default Lunatask area ID in which the tasks are created.
+  default_area_id: abc123

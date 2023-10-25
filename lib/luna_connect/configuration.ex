@@ -8,15 +8,22 @@ defmodule LunaConnect.Configuration do
   import Ecto.Changeset
 
   alias __MODULE__.Github
+  alias __MODULE__.Linear
 
   @type t :: %__MODULE__{
           access_token: String.t(),
-          github: %Github{}
+          github: %Github{},
+          linear: %Linear{}
         }
 
   @type github :: %Github{
           default_area_id: String.t(),
           ignored_organizations: [String.t()]
+        }
+
+  @type linear :: %Linear{
+          api_key: String.t() | nil,
+          default_area_id: String.t()
         }
 
   @primary_key false
@@ -28,6 +35,11 @@ defmodule LunaConnect.Configuration do
       field :default_area_id, :string
       field :ignored_organizations, {:array, :string}, default: []
     end
+
+    embeds_one :linear, Linear, primary_key: false do
+      field :api_key, :string
+      field :default_area_id, :string
+    end
   end
 
   defp changeset(attrs) do
@@ -35,12 +47,17 @@ defmodule LunaConnect.Configuration do
     |> cast(attrs, [:access_token])
     |> validate_required([:access_token])
     |> cast_embed(:github, required: true, with: &github_changeset/2)
+    |> cast_embed(:linear, required: true, with: &linear_changeset/2)
   end
 
   defp github_changeset(github, attrs) do
     github
     |> cast(attrs, [:default_area_id, :ignored_organizations])
     |> validate_required([:default_area_id])
+  end
+
+  defp linear_changeset(linear, attrs) do
+    cast(linear, attrs, [:api_key, :default_area_id])
   end
 
   @doc """
